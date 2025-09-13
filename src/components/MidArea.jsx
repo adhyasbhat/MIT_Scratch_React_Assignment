@@ -1,4 +1,3 @@
-// src/components/MidArea.jsx
 import React from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import dustbin from '../assets/icons/whitebin.png'
@@ -8,7 +7,7 @@ const BlockInput = ({ type, value, onChange }) => (
     className="w-12 text-black text-center rounded mx-1"
     value={value}
     onChange={onChange}
-    onClick={(e) => e.stopPropagation()} // Prevent drag on input click
+    onClick={(e) => e.stopPropagation()} 
   />
 );
 
@@ -16,7 +15,6 @@ export default function MidArea({ sprite, updateScript }) {
   const { setNodeRef } = useDroppable({ id: 'mid-area' });
 
   const handleInputChange = (blockId, field, value) => {
-    // Allow negative numbers and intermediate input like "-"
     const parsedValue =
       value === "" ? "" : isNaN(Number(value)) ? value : Number(value);
 

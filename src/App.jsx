@@ -35,10 +35,8 @@ export default function App() {
   const [activeSpriteId, setActiveSpriteId] = useState('sprite1');
   const spriteRefs = useRef({});
 
-  // Handler for dropping blocks into MidArea (ONLY for blocks)
   const handleBlockDrop = (event) => {
     const { over, active } = event;
-    // Ensure the draggable is a block from the sidebar, not a sprite
     if (over && over.id === 'mid-area' && active.id.startsWith('MOVE') || active.id.startsWith('TURN') || active.id.startsWith('GOTO') || active.id.startsWith('SAY') || active.id.startsWith('THINK') || active.id.startsWith('REPEAT')) {
       const blockType = active.id;
       const newBlock = { id: uuidv4(), type: blockType, values: {} };
@@ -49,10 +47,8 @@ export default function App() {
     }
   };
 
-  // Handler for dragging sprites inside the stage (ONLY for sprites)
   const handleSpriteDragEnd = (event) => {
     const { active, delta } = event;
-    // Check if the dragged item is a sprite
     if (sprites.some(s => s.id === active.id)) {
       setSprites(prevSprites =>
         prevSprites.map(sprite =>
@@ -89,17 +85,13 @@ export default function App() {
     setActiveSpriteId(newSpriteId);
   };
   const deleteSprite = (spriteId) => {
-    // Calculate the new state first
     const newSprites = sprites.filter(s => s.id !== spriteId);
     setSprites(newSprites);
 
-    // Check if the deleted sprite was the active one
     if (activeSpriteId === spriteId) {
       if (newSprites.length > 0) {
-        // If other sprites remain, make the first one active
         setActiveSpriteId(newSprites[0].id);
       } else {
-        // If no sprites are left, clear the active ID
         setActiveSpriteId(null);
       }
     }
@@ -109,7 +101,6 @@ export default function App() {
     const b = spriteRefs.current[spriteB.id]?.getBoundingClientRect();
     if (!a || !b) return;
 
-    // AABB collision detection
     if (
       a.x < b.x + b.width &&
       a.x + a.width > b.x &&
@@ -118,7 +109,6 @@ export default function App() {
     ) {
       console.log(`Collision detected between ${spriteA.id} and ${spriteB.id}!`);
 
-      // Swap the entire script arrays
       const scriptA = [...spriteA.script];
       const scriptB = [...spriteB.script];
 
@@ -209,7 +199,7 @@ export default function App() {
       await sleep(duration);
       setSprites(prev => prev.map(s => s.id === sprite.id ? { ...s, showMessage: false } : s));
     } else {
-      await sleep(100); // Small delay for move/turn animations
+      await sleep(100); 
     }
   };
 
@@ -224,7 +214,6 @@ export default function App() {
       <div className="h-full">
         <div className='h-16 bg-purple-500 w-full text-4xl text-white p-2 text-center font-semibold'>Sprite MIT</div>
         <div className='flex h-full'>
-          {/* DndContext for Blocks */}
           <DndContext onDragEnd={handleBlockDrop}>
             <Sidebar />
             <MidArea
@@ -233,7 +222,6 @@ export default function App() {
             />
           </DndContext>
 
-          {/* DndContext for Sprites */}
           <DndContext onDragEnd={handleSpriteDragEnd}>
             <PreviewArea
               sprites={sprites}
